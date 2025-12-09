@@ -1,0 +1,10 @@
+[Unit]
+Description=Rotate Mullvad WireGuard tunnels every 120 seconds
+
+[Timer]
+OnBootSec=30
+OnUnitActiveSec=120
+Unit=wg-rotate.service
+
+[Install]
+WantedBy=timers.target
