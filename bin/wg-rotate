@@ -1,0 +1,48 @@
+#!/bin/bash
+set -e
+
+CONFIG_DIR="/etc/wireguard"
+STATE_FILE="/run/wg-rotate.state"
+
+# Get sorted list of all config files
+mapfile -t configs < <(ls "$CONFIG_DIR"/*.conf 2>/dev/null | sort)
+
+if [ "${#configs[@]}" -eq 0 ]; then
+    echo "wg-rotate: No WireGuard configs found in $CONFIG_DIR" >&2
+    exit 1
+fi
+
+# Read last-used index or start at 0
+if [ -f "$STATE_FILE" ]; then
+    index=$(cat "$STATE_FILE" 2>/dev/null || echo 0)
+else
+    index=0
+fi
+
+next=$(( (index + 1) % ${#configs[@]} ))
+next_conf="${configs[$next]}"
+
+echo "wg-rotate: switching to index $next:"
+for i in "${!configs[@]}"; do
+    if [ "$i" -eq "$next" ]; then
+        echo "  * [$i] ${configs[$i]}"
+    else
+        echo "    [$i] ${configs[$i]}"
+    fi
+done
+
+# Bring down any existing interface
+current_if=$(wg show interfaces 2>/dev/null | tr ' ' '\n' | head -n1)
+if [ -n "$current_if" ]; then
+    echo "wg-rotate: bringing down $current_if"
+    wg-quick down "$current_if" || echo "wg-rotate: warning: failed to bring down $current_if" >&2
+fi
+
+# Bring up the next config
+echo "wg-rotate: bringing up $next_conf"
+wg-quick up "$next_conf"
+
+# Save next index
+echo "$next" > "$STATE_FILE"
+
+echo "wg-rotate: active config is now $next_conf"
