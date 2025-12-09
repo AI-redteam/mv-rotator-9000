@@ -1,4 +1,11 @@
 # wg-rotate-mullvad
+![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
+![Platform: Linux](https://img.shields.io/badge/platform-linux-blue.svg)
+![WireGuard](https://img.shields.io/badge/WireGuard-supported-88171A.svg)
+![Mullvad](https://img.shields.io/badge/Mullvad-compatible-orange.svg)
+![Systemd](https://img.shields.io/badge/systemd-required-blue.svg)
+![Status](https://img.shields.io/badge/status-stable-brightgreen.svg)
+
 
 A lightweight WireGuard endpoint rotator designed for Mullvad VPN on VPS servers.
 
