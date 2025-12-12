@@ -50,7 +50,7 @@ sudo apt install -y wireguard
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/YOURUSER/wg-rotate-mullvad.git
+git clone https://github.com/ai-redteam/wg-rotate-mullvad.git
 cd wg-rotate-mullvad
 ```
 
